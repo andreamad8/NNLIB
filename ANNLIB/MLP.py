@@ -34,6 +34,10 @@ class MLP(object):
 		self.params = []
 		for layer in self.layers:
 			self.params += layer.params
+		self.L2_sqr = (self.params[0] ** 2).sum() + (self.params[2] ** 2).sum()
+		self.L1=abs(self.params[0]).sum() + abs(self.params[2]).sum()
+
+
 
 
 	def output(self, x):
@@ -50,5 +54,6 @@ class MLP(object):
 	- error : theano.tensor.var.TensorVariable
 	'''
 
-	def squared_error(self, x, y):
-		return T.sum((self.output(x) - y)**2)
+	def squared_error(self, x, y,L2):
+		cost=T.sum((self.output(x) - y)**2)+L2*self.L2_sqr
+		return cost
