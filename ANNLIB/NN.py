@@ -24,8 +24,11 @@ class NN(object):
 		self.initNN()
 
 
-
-	def gradient_updates_momentum(self,cost, params, learning_rate, momentum):
+	########################
+	### NOTE: this function is called just one, then theano create a compiled version
+	### and then we need to init the shared variable. For instance for the momentum we
+	### need to init the variable that keeps track of the previous grad updates
+	def gradient_updates(self,cost, params, learning_rate, momentum):
 		assert momentum < 1 and momentum >= 0
 		updates = []
 		if(momentum==0):
@@ -33,12 +36,13 @@ class NN(object):
 				updates.append((param, param - learning_rate*T.grad(cost, param)))
 		else:
 			for param in params:
-				#init for the momentum 
+				#init param_update to keep track of previous changes
 				param_update = theano.shared(param.get_value()*0., broadcastable=param.broadcastable)
+				# first implicit init param = param - learing_rate*0
+				# then by the second time on param_update is going to be a*oldGrad + (1-a) newGrad
 				updates.append((param, param - learning_rate*param_update))
 				updates.append((param_update, momentum*param_update + (1. - momentum)*T.grad(cost, param)))
 		return updates
-
 
 	def initNN(self):
 		W_init = []
@@ -63,7 +67,7 @@ class NN(object):
 			cost = mlp.squared_error(mlp_input, mlp_target,L2)
 
 		
-		self.train = theano.function([mlp_input, mlp_target, theano.In(L2, value=self.lamb)], cost, updates=self.gradient_updates_momentum(cost, mlp.params, self.learning_rate,self.momentum))
+		self.train = theano.function([mlp_input, mlp_target, theano.In(L2, value=self.lamb)], cost, updates=self.gradient_updates(cost, mlp.params, self.learning_rate,self.momentum))
 		## utility function to check the loss 
 		self.cost_function = theano.function([mlp_input, mlp_target, theano.In(L2, value=self.lamb)], cost)
 		# Create a theano function for computing the MLP's output given some input
