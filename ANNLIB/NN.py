@@ -4,6 +4,7 @@ import matplotlib as plt
 import theano
 import theano.tensor as T
 import theano.d3viz as d3v
+import math
 from .layer import Layer
 from .MLP import MLP
 
@@ -30,6 +31,8 @@ class NN(object):
 	### need to init the variable that keeps track of the previous grad updates
 	def gradient_updates(self,cost, params, learning_rate, momentum):
 		assert momentum < 1 and momentum >= 0
+		#assert learning_rate < 1
+		assert self.lamb<1
 		updates = []
 		if(momentum==0):
 			for param in params:
@@ -50,16 +53,23 @@ class NN(object):
 		activations = []
 		
 		for n_input, n_output in zip(self.layer_sizes[:-1], self.layer_sizes[1:]):
-			W_init.append( np.asarray(np.random.uniform(size=(n_output, n_input),low=-.4, high=.4), dtype=theano.config.floatX))
-			b_init.append(np.ones(n_output))
+			#W_init.append( np.asarray(np.random.uniform(size=(n_output, n_input),low=-.7, high=.7), dtype=theano.config.floatX))
+			W_init.append( np.random.randn(n_output, n_input) * math.sqrt(2.0/n_input))
+			
+			b_init.append(np.zeros(n_output))
+
 			if(self.activations == "sigmoid"):
 				activations.append(T.nnet.sigmoid)
+			if(self.activations == "regression"):
+				activations.append(T.nnet.sigmoid)
+				activations.append(None)
+				# notice when is none the layer has as default the dot prod Wx +b
+				self.activations = "none"
 
 		#create MLP
 		mlp = MLP(W_init, b_init, activations)
-
 		mlp_input = T.matrix('mlp_input')
-		mlp_target = T.vector('mlp_target')
+		mlp_target = T.matrix('mlp_target')
 		L2 = T.scalar('L2')
 		if(self.loss=="MSE"):
 			cost = mlp.mean_squared_error(mlp_input, mlp_target,L2)

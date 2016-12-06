@@ -16,6 +16,7 @@ def data(filename):
 	translatio_4={'1':[1,0,0,0],'2':[0,1,0,0],'3':[0,0,1,0],'4':[0,0,0,1]}
 	encoding={'0':translatio_3,'1':translatio_3,'2':translatio_2,'3':translatio_3,'4':translatio_4,'5':translatio_2}
 	X=[ e[1:] for e in data]
+
 	newX=[]
 	for val in X:
 		temp=[]
@@ -26,52 +27,31 @@ def data(filename):
 	X=[ np.array(e, dtype=theano.config.floatX) for e in newX]
 	y=[e[0] for e in data]
 	X = np.array(X, dtype=theano.config.floatX)
-	y = np.array(y, dtype=theano.config.floatX)
+	y = [np.array(y, dtype=theano.config.floatX)]
 
 	#rng_state = np.random.get_state()
 	#np.random.shuffle(X)
 	#np.random.set_state(rng_state)
 	#np.random.shuffle(y)
 	X=X.transpose()
+	print(len(X[0]))
+	y=np.array(y)
 	return X,y
 
-def KfoldVALIDATION(X_train,y_train,X_test,y_test):
-	k_fold = KFold(n_splits=10,shuffle=False)
-	fold=[]
-	for train, test in k_fold.split(X_train[1]):
-		X=X_train.transpose()
-		X_t=X[train]
-		X_t=X_t.transpose()
-		X_v=X[test]
-		X_v=X_v.transpose()
-		m=Model(X_t,y_train[train],X_v,y_train[test],X_test,y_test)
-		m.ANNModel(hidden_unit=3,outputsize=1,
-				learning_rate = 0.01,
-				momentum = 0.5,
-				lamb=0.00,
-				activations="sigmoid",
-				loss="SE")
-		m.train(2000)
-		m.test()
-		fold.append([m.accuracy_train,m.accuracy_val,m.accuracy_test])
-		#m.plotLA()
-		#m.ROC()
-	print(fold)
-
 if __name__=='__main__':
-	X_train,y_train=data('dataset/monks-3.train')
-	X_test,y_test=data('dataset/monks-3.test')
+	X_train,y_train=data('dataset/monks-1.train')
+	X_test,y_test=data('dataset/monks-1.test')
 	assert X_train.shape[0]== X_test.shape[0]
-	#KfoldVALIDATION(X_train,y_train,X_test,y_test)
+	
 
 	m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
 	m.ANNModel(hidden_unit=4,
 			outputsize=1,
-			learning_rate = .9,
-			momentum = 0.0,
-			lamb=0.0,
+			learning_rate = 0.9,
+			momentum = 0.5,
+			lamb=0.00,
 			activations="sigmoid",
 			loss="MSE")
-	m.train(3000)
-	m.test()
+	m.train(4000)
+	#m.test()
 	m.plotLA()
