@@ -53,7 +53,7 @@ class MLP(object):
 	'''
 
 	def mean_squared_error(self, x, y,L2):
-		cost=T.mean((self.output(x) - y)**2)+L2*self.L2_sqr 
+		cost=T.mean(T.square(self.output(x) - y))+L2*self.L2_sqr 
 		return cost
 
 	def squared_error(self, x, y,L2):

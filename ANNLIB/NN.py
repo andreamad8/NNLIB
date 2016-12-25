@@ -26,7 +26,7 @@ class NN(object):
 
 
 	########################
-	### NOTE: this function is called just one, then theano create a compiled version
+	### NOTE: this function is called just one, then theano compile the model
 	### and then we need to init the shared variable. For instance for the momentum we
 	### need to init the variable that keeps track of the previous grad updates
 	def gradient_updates(self,cost, params, learning_rate, momentum):
@@ -41,10 +41,9 @@ class NN(object):
 			for param in params:
 				#init param_update to keep track of previous changes
 				param_update = theano.shared(param.get_value()*0., broadcastable=param.broadcastable)
-				# first implicit init param = param - learing_rate*0
-				# then by the second time on param_update is going to be a*oldGrad + (1-a) newGrad
-				updates.append((param, param - learning_rate*param_update))
+				# generate update 
 				updates.append((param_update, momentum*param_update + (1. - momentum)*T.grad(cost, param)))
+				updates.append((param, param - learning_rate*param_update))
 		return updates
 
 	def initNN(self):

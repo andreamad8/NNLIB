@@ -5,6 +5,7 @@ import theano
 import theano.tensor as T
 import seaborn as sns
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid.inset_locator import inset_axes
 from sklearn import metrics
 from sklearn.metrics import roc_curve, auc
 from numpy import linalg as LA
@@ -82,6 +83,7 @@ class Model(object):
 	def accuracy_regression(self,output,y):
 		#print(y.shape,y.shape[0],y.shape[1])
 		#return mean_squared_error(output, y)
+		#print(output.shape,y.shape)
 		output=output.transpose()
 		y=y.transpose()
 		temp=0.0
@@ -98,27 +100,29 @@ class Model(object):
 			current_cost = self.model.train(self.X_train, self.y_train)
 			current_output = self.model.mlp_output(self.X_train)
 			cost_train=self.model.cost_function(self.X_train, self.y_train)
-			self.accuracy_train = self.accuracy_regression(current_output,self.y_train)
+			self.accuracy_train = self.accuracy_binary(current_output,self.y_train)
 			self.acc_training.append(self.accuracy_train)
 			self.loss_training.append(float(cost_train))
 			
 			##validation
 			current_output_val = self.model.mlp_output(self.X_validation)
 			cost_val=self.model.cost_function(self.X_validation, self.y_validation)
-			self.accuracy_val = self.accuracy_regression(current_output_val,self.y_validation)
+			self.accuracy_val = self.accuracy_binary(current_output_val,self.y_validation)
 			self.acc_val.append(self.accuracy_val)
 			self.loss_val.append(float(cost_val))
 			if(iteration%50==0):
-				print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f} \r'.format(float(current_cost), self.accuracy_train),end=' ')
+				print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f}'.format(float(current_cost), self.accuracy_train))
+				print('Loss validation: {:.3f}, Accuracy validation: {:.3f}'.format(float(cost_val),float(self.accuracy_val)))
+
 			iteration += 1
 		
 		##TO RUN CROSS VALIDATION
-		###current_output = self.model.mlp_output(self.X_train)
-		###self.cost_train=self.model.cost_function(self.X_train, self.y_train)
-		###self.accuracy_train = self.accuracy_regression(current_output,self.y_train)
-		###current_output_val = self.model.mlp_output(self.X_validation)
-		###self.cost_val=self.model.cost_function(self.X_validation, self.y_validation)
-		###self.accuracy_val = self.accuracy_regression(current_output_val,self.y_validation)
+		#current_output = self.model.mlp_output(self.X_train)
+		#self.cost_train=self.model.cost_function(self.X_train, self.y_train)
+		#self.accuracy_train = self.accuracy_regression(current_output,self.y_train)
+		#current_output_val = self.model.mlp_output(self.X_validation)
+		#self.cost_val=self.model.cost_function(self.X_validation, self.y_validation)
+		#self.accuracy_val = self.accuracy_regression(current_output_val,self.y_validation)
 
 		self.iter=iteration
 		print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f}'.format(float(current_cost), self.accuracy_train))
@@ -128,7 +132,7 @@ class Model(object):
 	def test(self,X_test,y_test):
 		output = self.model.mlp_output(self.X_test)
 		cost_test=self.model.cost_function(self.X_test, self.y_test)
-		self.accuracy_test = self.accuracy_regression(output,self.y_test)
+		self.accuracy_test = self.accuracy_binary(output,self.y_test)
 		print('Loss test      : {:.3f}, Accuracy test      : {:.3f}'.format(float(cost_test),float(self.accuracy_test)))
 		print("\n")
 
@@ -137,31 +141,39 @@ class Model(object):
 	def plotLA(self):
 		fig = plt.figure()
 		ax1 = fig.add_subplot(2, 1, 1)
-		plt.plot(self.loss_training, label="Training",linewidth=1.95, alpha=0.7, color='red')
-		plt.plot(self.loss_val,label="Validation",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')
-		plt.annotate('Learning rate: %s'% str(self.learning_rate),xy=(0.6,0.9), xycoords='axes fraction',size=13)
-		plt.annotate('Momentum: %s'%  str(self.momentum),xy=(0.6,0.8), xycoords='axes fraction',size=13)
-		plt.annotate('L2: %s'%  str(self.lamb),xy=(0.6,0.7), xycoords='axes fraction',size=13)
+		#inset1 = inset_axes(ax1, width="60%", height="60%")
+
+		ax1.plot(self.loss_training, label="Training",linewidth=1.95, alpha=0.7, color='red')
+		ax1.plot(self.loss_val,label="Test",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')
+		ax1.annotate('Learning rate: %s'% str(self.learning_rate),xy=(0.6,0.9), xycoords='axes fraction',size=13)
+		ax1.annotate('Momentum: %s'%  str(self.momentum),xy=(0.6,0.8), xycoords='axes fraction',size=13)
+		ax1.annotate('L2: %s'%  str(self.lamb),xy=(0.6,0.7), xycoords='axes fraction',size=13)
 		ax1.set_ylabel("Loss")
 		ax1.yaxis.grid(True)
 		ax1.set_xlim([0,self.iter+1 ])
-		#ax1.set_xlim([0,100 ])
-		#ax1.set_yscale('log')		
-		plt.title("AA1 CUP")
+		plt.title("MONK 2")
+		#inset1.plot(self.loss_training, label="Training",linewidth=1.95, alpha=0.7, color='red')
+		#inset1.plot(self.loss_val,label="Test",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')		
+		#inset1.set_xlim([0, 60])
+		#inset1.yaxis.grid(True)			
 		
-		plt.legend(loc=1)
+		ax1.legend(loc=1)
 		ax2 = fig.add_subplot(2, 1, 2)
-		plt.plot(self.acc_training,label="Training",linewidth=1.95, alpha=0.7, color='red')
-		plt.plot(self.acc_val,label="Validation",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')
+		#inset2 = inset_axes(ax2, width="60%", height="60%")
+
+		ax2.plot(self.acc_training,label="Training",linewidth=1.95, alpha=0.7, color='red')
+		ax2.plot(self.acc_val,label="Test",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')
+		#inset2.plot(self.acc_training,label="Training",linewidth=1.95, alpha=0.7, color='red')
+		#inset2.plot(self.acc_val,label="Test",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')		
+		#inset2.set_xlim([0, 60])
+		#inset2.yaxis.grid(True)
 		ax2.set_xlabel("Epochs")
 		ax2.set_ylabel("MEE")
-		#ax2.set_ylim([0, 1.1])
 		ax2.set_xlim([0,self.iter+1 ])	
-		#ax2.set_xlim([0,100 ])
-				
 		ax2.yaxis.grid(True)
 		#plt.savefig('IMG/Monk1_%s_%s_%s.png'%(self.learning_rate,self.momentum,self.lamb), format='png')
 		plt.show()
+
 
 	def ROC(self):
 		output = self.model.mlp_output(self.X_test)

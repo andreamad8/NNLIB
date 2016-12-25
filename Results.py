@@ -21,7 +21,7 @@ dists={
 }
 
 Names = sorted(dists)
-fold = pickle.load( open( "foldsTEST_norm.p", "rb" ) )
+fold = pickle.load( open( "foldsTEST.p", "rb" ) )
 for f in fold:
 	test=sorted(f,key=lambda tup: tup[2],reverse=False)
 	for t in test[:2]:

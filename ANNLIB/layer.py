@@ -42,10 +42,10 @@ class Layer(object):
 	
 	def output(self, x):
 		# Compute linear mix
-		lin_output = T.dot(self.W, x) + self.b
 		# Output is just linear mix if no activation function
 		# Otherwise, apply the activation function
 		if(self.activation is None):
+			lin_output = T.dot(self.W, x) + self.b
 			return lin_output
 		else:
 			return self.activation(lin_output)

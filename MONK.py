@@ -47,8 +47,8 @@ if __name__=='__main__':
 	m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
 	m.ANNModel(hidden_unit=4,
 			outputsize=1,
-			learning_rate = 0.9,
-			momentum = 0.5,
+			learning_rate = 0.5,
+			momentum = 0.9,
 			lamb=0.00,
 			activations="sigmoid",
 			loss="MSE")
