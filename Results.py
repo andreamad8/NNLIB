@@ -12,35 +12,26 @@ import itertools as it
 import pickle
 
 
-dists={
-'hidden_unit': [10,50,100]
-,'learning_rate':[0.9,0.1,0.01,0.001]
-,'momentum':[0.5,0.7,0.9]
-,'lamb':[0.01,0.001,0.0001]
-,'MAX_EPOCHS':[5,50,200]
-}
+Names=['hidden_unit'
+,'learning_rate'
+,'momentum'
+,'lamb']
 
-Names = sorted(dists)
-fold = pickle.load( open( "foldsTEST.p", "rb" ) )
+
+#fold = pickle.load( open( "foldsTEST.p", "rb" ) )
+#fold1 = pickle.load( open( "foldsTESTmodel10.p", "rb" ) )
+#fold= [fold[i]+fold1[i] for i in range(len(fold))]
+
+fold = pickle.load( open( "kerasModel.p", "rb" ) )
+fold1 = pickle.load( open( "kerasModel10.p", "rb" ) )
+fold= [fold[i]+fold1[i] for i in range(len(fold))]
 for f in fold:
 	test=sorted(f,key=lambda tup: tup[2],reverse=False)
+	#print('new fold')
 	for t in test[:2]:
+		temp=[]
 		for i in range(0,len(t[0])):
-			print('%s: %f'%(Names[i],t[0][i]))
-		print('Training   MEE:%f'%t[1])
-		print('Validation MEE:%f'%t[2])
-		print('\n')
-	print('\n')
-
-
-
-
-
-##############################
-## FOLD1 
-## 	'hidden_unit':   [10,50,100]
-##	,'learning_rate':[0.9,0.1,0.01,0.001]
-##	,'momentum':     [0.5,0.7,0.9]
-##	,'lamb':         [0.01,0.001,0.0001]
-##	,'MAX_EPOCHS':   [5,50,200]
-################################
+			temp.append(t[0][i])
+		temp.append(t[1][1])
+		temp.append(t[2])
+		print('%d,%2f,%1f,%5f,%4f,%4f'%(int(temp[0]),temp[1],temp[2],temp[3],temp[4],temp[5]))

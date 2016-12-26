@@ -9,6 +9,8 @@ from keras.optimizers import SGD
 import numpy as np
 import itertools
 import matplotlib.pyplot as plt
+import pickle
+from keras.regularizers import l2, activity_l2
 
 def data(filename):
 	with open(filename) as f:
@@ -42,24 +44,27 @@ def data(filename):
 	return X,y
 
 if __name__=='__main__':
-	X_train,y_train=data('dataset/monks-2.train')
-	X_test,y_test=data('dataset/monks-2.test')
+	X_train=pickle.load( open( "dataset/X_train.p", "rb" ) )
+	y_train=pickle.load( open( "dataset/y_train.p", "rb" ) )
+	X_test=pickle.load( open( "dataset/X_test.p", "rb" ) )
+	y_test=pickle.load( open( "dataset/y_test.p", "rb" ) )
 	assert X_train.shape[0]== X_test.shape[0]
 
 	# create model
 	model = Sequential()
-	model.add(Dense(4, input_dim=17, init='normal', activation='sigmoid'))
-	model.add(Dense(1, init='normal', activation='sigmoid'))
+	model.add(Dense(25, input_dim=10, init='normal', W_regularizer=l2(0.0001),activation='sigmoid'))
+	model.add(Dense(2, init='normal',W_regularizer=l2(0.0001), activation='sigmoid'))
 	# Compile model
-	sgd = SGD(lr=0.5, momentum=0.9, )
-	model.compile(loss='mean_squared_error', optimizer=sgd,metrics=['accuracy'])
+	sgd = SGD(lr=0.5, momentum=0.3, )
+	model.compile(loss='mean_squared_error', optimizer=sgd,metrics=['mean_squared_error'])
 	print(X_train.shape, y_train.shape)
+	print(model.summary())
 
-	history = model.fit(X_train.transpose(), y_train.transpose(), batch_size=169,nb_epoch=500, verbose=0)
+	'''
+	history = model.fit(X_train.transpose(), y_train.transpose(), batch_size=X_train.shape[1],nb_epoch=4000, verbose=1)
 	# list all data in history
-	print(history.history.keys())
-	#summarize history for accuracy
-	plt.plot(history.history['acc'])
+
+	plt.plot(history.history['mean_squared_error'])
 	#plt.plot(history.history['val_acc'])
 	plt.title('model accuracy')
 	plt.ylabel('accuracy')
@@ -74,7 +79,8 @@ if __name__=='__main__':
 	plt.xlabel('epoch')
 	#plt.legend(['train', 'test'], loc='upper left')
 	plt.show()
-	#for i in range(700):
-	#	model.train_on_batch(X_train.transpose(), y_train.transpose())
-	#	loss_and_metrics = model.evaluate(X_train.transpose(), y_train.transpose(), batch_size=432)
-	#	print (loss_and_metrics)
+	'''
+	for i in range(700):
+		model.train_on_batch(X_train.transpose(), y_train.transpose())
+		loss_and_metrics = model.evaluate(X_train.transpose(), y_train.transpose(), batch_size=X_train.shape[1])
+		print (loss_and_metrics[0]/float(X_train.shape[1]))

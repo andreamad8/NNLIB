@@ -1,6 +1,6 @@
 ####################
-##### We'll be defining our multilayer perceptron as a series of "layers", 
-##### each applied successively to the input to produce the network output. Each 
+##### We'll be defining our multilayer perceptron as a series of "layers",
+##### each applied successively to the input to produce the network output. Each
 ##### layer is defined as a class, which stores a weight matrix and a bias vector
 ##### and includes a function for computing the layer's output.
 ########################
@@ -28,8 +28,8 @@ class Layer(object):
 		self.b = theano.shared(value=b_init.reshape(n_output, 1).astype(theano.config.floatX), name='b',borrow=True,broadcastable=(False, True)) # broadcastable is an opt
 		self.activation = activation
 		self.params = [self.W, self.b] # we compute the gradient respect to those parameter
-	
-	
+
+
 	'''
 	Compute this layer's output given an input
 	:parameters:
@@ -39,13 +39,13 @@ class Layer(object):
 	- output : theano.tensor.var.TensorVariable
 	Mixed, biased, and activated x
 	'''
-	
+
 	def output(self, x):
 		# Compute linear mix
 		# Output is just linear mix if no activation function
 		# Otherwise, apply the activation function
+		lin_output = T.dot(self.W, x) + self.b
 		if(self.activation is None):
-			lin_output = T.dot(self.W, x) + self.b
 			return lin_output
 		else:
 			return self.activation(lin_output)
