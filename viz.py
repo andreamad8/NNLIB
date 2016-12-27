@@ -10,6 +10,9 @@ plt.rc('font', family='Times-Roman')
 sns.set_style(style='white')
 
 def LRvdMOM():
+	'''
+	to generate the plot Learning rate vs momentum
+	'''
 	plot_arr=pickle.load( open( "Model/LRvsMOM10.p", "rb" ) )
 	pair=pickle.load( open( "Model/pairLRvsMOM10.p", "rb" ) )
 
@@ -39,6 +42,9 @@ def LRvdMOM():
 
 
 def HvsL():
+	'''
+	to generate the plot Hidden units vs Lambda
+	'''
 	plot_arr=pickle.load( open( "Model/HUvsLAMBDA03.p", "rb" ) )
 	pair=pickle.load( open( "Model/pairHUvsLAMBDA03.p", "rb" ) )
 

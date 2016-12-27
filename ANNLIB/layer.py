@@ -1,25 +1,16 @@
-####################
-##### We'll be defining our multilayer perceptron as a series of "layers",
-##### each applied successively to the input to produce the network output. Each
-##### layer is defined as a class, which stores a weight matrix and a bias vector
-##### and includes a function for computing the layer's output.
-########################
-'''
-A layer of a neural network, computes s(Wx + b) where s is a nonlinearity and x is the input vector.
-:parameters:
-- W_init : np.ndarray, shape=(n_output, n_input)
-Values to initialize the weight matrix to.
-- b_init : np.ndarray, shape=(n_output,)
-Values to initialize the bias vector
-- activation : theano.tensor.elemwise.Elemwise
-Activation function for layer output
-'''
 from __future__ import print_function
 import numpy as np
 import matplotlib as plt
 import theano
 import theano.tensor as T
 class Layer(object):
+	'''
+	A layer of a neural network, computes s(Wx + b) where s is a nonlinearity and x is the input vector.
+	:parameters:
+	- W_init : multidimentional numpy array
+	- b_init : numpy array
+	- activation : theano elemwise funtion or null in case of linear output
+	'''
 	def __init__(self, W_init, b_init, activation):
 		n_output, n_input = W_init.shape
 		# Make sure b is n_output in size
@@ -29,21 +20,15 @@ class Layer(object):
 		self.activation = activation
 		self.params = [self.W, self.b] # we compute the gradient respect to those parameter
 
-
-	'''
-	Compute this layer's output given an input
-	:parameters:
-	- x : theano.tensor.var.TensorVariable
-	Theano symbolic variable for layer input
-	:returns:
-	- output : theano.tensor.var.TensorVariable
-	Mixed, biased, and activated x
-	'''
-
 	def output(self, x):
-		# Compute linear mix
-		# Output is just linear mix if no activation function
-		# Otherwise, apply the activation function
+		'''
+		Compute this layer's output given an input
+		:parameters:
+		- x : Symbolic theano variable
+		:returns:
+		- output : Symbolic theano variable s(Wx + b)
+		 s can be also an identity function
+		'''
 		lin_output = T.dot(self.W, x) + self.b
 		if(self.activation is None):
 			return lin_output

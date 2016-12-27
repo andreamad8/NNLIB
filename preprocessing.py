@@ -18,7 +18,25 @@ import seaborn as sns
 
 
 
+def datatest(filename):
+	'''
+	prepare obj for the evalute the blind test
+	'''
+	X=list()
+	y=list()
+	with open(filename, 'rb') as f:
+		reader = csv.reader(f)
+		for row in reader:
+			X.append([float(x) for x in row[1:]])
+	X_blindteset=np.array(X, dtype=theano.config.floatX)
+	X_blindteset=X_blindteset.transpose()
+	return X_blindteset
+
+
 def data(filename):
+	'''
+	split the data, shuffle, and prepare the obj for the train
+	'''
 	X=list()
 	y=list()
 	with open(filename, 'rb') as f:
@@ -65,7 +83,6 @@ def data(filename):
 		i+=1
 	plt.show()
 
-	'''
 	#### SHUFFLE DATA
 	rng_state = np.random.get_state()
 	np.random.shuffle(X)
@@ -81,9 +98,11 @@ def data(filename):
 	print(y_train.shape,y_test.shape)
 
 	return X_train,y_train,X_test,y_test
-	'''
 if __name__=='__main__':
-	X_train,y_train,X_test,y_test=data('dataset/LOC-OSM2-TR.csv')
+	#X_train,y_train,X_test,y_test=data('dataset/LOC-OSM2-TR.csv')
+	X_blindteset=datatest('dataset/LOC-OSM2-TS.csv')
+	pickle.dump( X_blindteset, open( "dataset/X_blindteset.p", "wb" ) )
+
 	'''
 	pickle.dump( X_train, open( "dataset/X_train.p", "wb" ) )
 	pickle.dump( y_train, open( "dataset/y_train.p", "wb" ) )

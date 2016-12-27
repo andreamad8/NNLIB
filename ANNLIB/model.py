@@ -53,7 +53,9 @@ class Model(object):
 		self.cost_val=0.0
 
 	def LinerReg(self):
-		# Create linear regression object
+		'''
+		Linar model using scikit_learn
+		'''
 		regr = linear_model.LinearRegression()
 		regr.fit(self.X_train.transpose(), self.y_train.transpose())
 		out=regr.predict(self.X_test.transpose())
@@ -61,6 +63,9 @@ class Model(object):
 
 
 	def KerasANN(self,hidden_unit,learning_rate,momentum,lamb):
+		'''
+		Keras ANN model, run the same model 10 times and takes the average
+		'''
 		temp=[]
 		for i in range(10):
 			model = Sequential()
@@ -85,18 +90,26 @@ class Model(object):
 
 
 	def ANNModel(self,hidden_unit,outputsize,learning_rate,momentum,lamb,activations,loss):
+		'''
+		init the NN model, with the selected parameters
+		'''
 		self.learning_rate=learning_rate
 		self.momentum=momentum
 		self.lamb=lamb
 		self.activations=activations
 		layer_sizes = [self.X_train.shape[0], hidden_unit, outputsize]
-
 		self.model=NN(self.X_train,self.y_train,layer_sizes,learning_rate,momentum,lamb,activations,loss)
 
 	def accuracy_binary(self,output,y):
+		'''
+		accuracy used for monk
+		'''
 		return np.mean((output > .5) == y)
 
 	def accuracy_regression(self,output,y):
+		'''
+		MEE calculator, sometimes we need to change transpose if we use other models
+		'''
 		output=output.transpose()
 		y=y.transpose()
 		temp=0.0
@@ -106,9 +119,13 @@ class Model(object):
 
 
 	def train(self,max_iteration):
+		'''
+		function used to train our model
+		'''
 		iteration = 0
-		print("TRAINING STARTED \n")
-		while iteration < max_iteration:
+		cost = 0
+		#print("TRAINING STARTED \n")
+		while iteration < max_iteration or cost == current_cost :
 			##training
 			current_cost = self.model.train(self.X_train, self.y_train)
 			current_output = self.model.mlp_output(self.X_train)
@@ -126,7 +143,7 @@ class Model(object):
 			#if(iteration%50==0):
 			#	print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f}'.format(float(current_cost), self.accuracy_train))
 			#	print('Loss validation: {:.3f}, Accuracy validation: {:.3f}'.format(float(cost_val),float(self.accuracy_val)))
-
+			cost = current_cost
 			iteration += 1
 
 
@@ -139,11 +156,21 @@ class Model(object):
 		self.accuracy_val = self.accuracy_regression(current_output_val,self.y_validation)
 
 		self.iter=iteration
-		print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f}'.format(float(current_cost), self.accuracy_train))
+		#print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f}'.format(float(current_cost), self.accuracy_train))
 		#print('Loss validation: {:.3f}, Accuracy validation: {:.3f}'.format(float(cost_val),float(self.accuracy_val)))
 
 
+
+	def predict(self, X_blindtest):
+		'''
+		give X as input predict the output using the previous model
+		'''
+		return self.model.mlp_output(self.X_test)
+
 	def test(self,X_test,y_test):
+		'''
+		evalute the model using the test datas
+		'''
 		output = self.model.mlp_output(self.X_test)
 		cost_test=self.model.cost_function(self.X_test, self.y_test)
 		self.accuracy_test = self.accuracy_regression(output,self.y_test)
@@ -153,6 +180,9 @@ class Model(object):
 
 
 	def plotLA(self):
+		'''
+		to generate the plots of the loss
+		'''
 		fig = plt.figure()
 		ax1 = fig.add_subplot(2, 1, 1)
 		inset1 = inset_axes(ax1, width="60%", height="60%")
@@ -186,21 +216,4 @@ class Model(object):
 		ax2.set_xlim([0,self.iter+1 ])
 		ax2.yaxis.grid(True)
 		plt.savefig('IMG/AA1CUP.png', format='png',dpi=400)
-		plt.show()
-
-
-	def ROC(self):
-		output = self.model.mlp_output(self.X_test)
-		fpr, tpr, thresholds = metrics.roc_curve(self.y_test.reshape(-1), output.reshape(-1))
-		roc_auc = auc(fpr, tpr)
-		plt.figure()
-		lw = 2
-		plt.plot(fpr, tpr, color='darkorange',lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
-		plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
-		plt.xlim([0.0, 1.0])
-		plt.ylim([0.0, 1.01])
-		plt.xlabel('False Positive Rate')
-		plt.ylabel('True Positive Rate')
-		plt.title('Receiver operating characteristic')
-		plt.legend(loc="lower right")
 		plt.show()

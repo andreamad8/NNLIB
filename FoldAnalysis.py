@@ -12,18 +12,17 @@ import itertools as it
 import pickle
 
 
-Names=['hidden_unit'
-,'learning_rate'
-,'momentum'
-,'lamb']
 
-
-#fold = pickle.load( open( "foldsTEST.p", "rb" ) )
-#fold1 = pickle.load( open( "foldsTESTmodel10.p", "rb" ) )
+'''
+utilits to print out the best models in each folds
+'''
+#### thereare two files because I have runned the fold separatelly.
+#fold = pickle.load( open( "ResultModelSelection/foldsTEST.p", "rb" ) )
+#fold1 = pickle.load( open( "ResultModelSelection/foldsTESTmodel10.p", "rb" ) )
 #fold= [fold[i]+fold1[i] for i in range(len(fold))]
 
-fold = pickle.load( open( "kerasModel.p", "rb" ) )
-fold1 = pickle.load( open( "kerasModel10.p", "rb" ) )
+fold = pickle.load( open( "ResultModelSelection/kerasModel.p", "rb" ) )
+fold1 = pickle.load( open( "ResultModelSelection/kerasModel10.p", "rb" ) )
 fold= [fold[i]+fold1[i] for i in range(len(fold))]
 for f in fold:
 	test=sorted(f,key=lambda tup: tup[2],reverse=False)

@@ -18,17 +18,9 @@ from keras.utils import np_utils
 from keras.optimizers import SGD
 from keras.regularizers import l2, activity_l2
 from numpy import linalg as LA
+import csv
 
-
-# Data Set (v1): LOC-OSM2-TR
-# Nov 2016
-# AA1-2016 CUP: http://www.di.unipi.it/~micheli/DID/CUP-AA1/2016
-# INFO: micheli@di.unipi.it
-# (C) CIML group - Gallicchio, Micheli 2016
-#
-# Format:
-# Training set: id inputs target_x target_y (last 2 columns)
-# Blind Test set: id inputs
+### PARAMETER FOR THE MODEL SELECTION
 models=[[100,0.01,0.1,0.01]
 ,[100,0.01,0.3,0.01]
 ,[100,0.01,0.6,0.01]
@@ -137,11 +129,9 @@ models=[[100,0.01,0.1,0.01]
 ,[10,0.08,0.6,0.0001]
 ,[10,0.08,0.8,0.0001]
 ]
+
+## MEE CALCULATOR
 def accuracy_regression(output,y):
-	#print(y.shape,y.shape[0],y.shape[1])
-	#return mean_squared_error(output, y)
-	#print(output.shape,y.shape)
-	#output=output.transpose()
 	y=y.transpose()
 	temp=0.0
 	for i in range(max(y.shape)):
@@ -228,22 +218,40 @@ if __name__=='__main__':
 	y_train=pickle.load( open( "dataset/y_train.p", "rb" ) )
 	X_test=pickle.load( open( "dataset/X_test.p", "rb" ) )
 	y_test=pickle.load( open( "dataset/y_test.p", "rb" ) )
+	X_blind_test=pickle.load( open( "dataset/X_blindteset.p", "rb" ) )
+
+	## 5 fold cross Validation for my model
 	#KfoldVALIDATION(X_train,y_train)
+
+
+	## 5 fold cross Validation for Keras Model
 	#KerasANN(X_train,y_train)
+	## Test keras model
+	#m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
+	#m.KerasANN(hidden_unit=25,learning_rate =0.05,momentum = 0.6,lamb=0.0001)
+
+
+	## Linear Model
 	#m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
 	#m.LinerReg()
 
 
-	#m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
-	#m.KerasANN(hidden_unit=25,learning_rate =0.05,momentum = 0.6,lamb=0.0001)
-	#m.ANNModel(hidden_unit=25,	outputsize=2,learning_rate =0.05,momentum = 0.6,lamb=0.0001, activations="regression",	loss="MSE")
-	#m.train(5000)
+
+	m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
+	m.ANNModel(hidden_unit=25,	outputsize=2,learning_rate =0.05,momentum = 0.6,lamb=0.0001, activations="regression",	loss="MSE")
+	m.train(11000)
+	predictedvalue=m.predict(X_blind_test)
+	print('# Andrea Madotto\n# samurai\n# LOC-OSM2 - AA1 2016 CUP v1\n# 27 Dec 2016\n')
+	i=1
+	for x_i,y_i in zip(X_blind_test.transpose(),predictedvalue.transpose()):
+		print('%d,%6f,%6f'%(i,y_i[0],y_i[1]))
+		i+=1
 	#m.test(X_test,y_test)
 	#m.plotLA()
 
-	'''
-	### to generate avg and std of our model
 
+	### to generate avg and std of our model
+	'''
 	temp=[]
 	for i in range(10):
 		m=Model(X_train,y_train,X_test,y_test,X_test,y_test)

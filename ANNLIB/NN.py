@@ -10,6 +10,17 @@ from .MLP import MLP
 
 
 class NN(object):
+	'''
+	NN class, instance the MLP object and create the funtion used in the training
+	:parameters:
+		- X : matrix of sample
+		- y : matrix of expected output
+		- layer_sizes : integer
+		- learning_rate : float
+		- momentum : float
+		- lamb : float
+		- activations : string (none| sigmoid)
+	'''
 	def __init__(self,X,y,layer_sizes,learning_rate,momentum,lamb,activations,loss):
 		self.X=X
 		self.y=y
@@ -29,7 +40,17 @@ class NN(object):
 	### NOTE: this function is called just one, then theano compile the model
 	### and then we need to init the shared variable. For instance for the momentum we
 	### need to init the variable that keeps track of the previous grad updates
+	########################
 	def gradient_updates(self,cost, params, learning_rate, momentum):
+		'''
+		function that generates the parameters updates for the W and b. [W and b
+		are stored in the params parameter]
+		:parameters:
+		cost : Theano function
+		params : List of multidimentional numpy array containing Ws and bs
+		learning_rate : float
+		momentum : float
+		'''
 		assert momentum < 1 and momentum >= 0
 		#assert learning_rate < 1
 		assert self.lamb<1
@@ -41,20 +62,23 @@ class NN(object):
 			for param in params:
 				#init param_update to keep track of previous changes
 				param_update = theano.shared(param.get_value()*0., broadcastable=param.broadcastable)
-				# generate update 
+				# generate update
 				updates.append((param_update, momentum*param_update + (1. - momentum)*T.grad(cost, param)))
 				updates.append((param, param - learning_rate*param_update))
 		return updates
 
 	def initNN(self):
+		'''
+		init MLP and generate function usefull in the training
+		'''
 		W_init = []
 		b_init = []
 		activations = []
-		
+
 		for n_input, n_output in zip(self.layer_sizes[:-1], self.layer_sizes[1:]):
 			#W_init.append( np.asarray(np.random.uniform(size=(n_output, n_input),low=-.7, high=.7), dtype=theano.config.floatX))
 			W_init.append( np.random.randn(n_output, n_input) * math.sqrt(2.0/n_input))
-			
+
 			b_init.append(np.zeros(n_output))
 
 			if(self.activations == "sigmoid"):
@@ -75,16 +99,9 @@ class NN(object):
 		elif(self.loss=="SE"):
 			cost = mlp.squared_error(mlp_input, mlp_target,L2)
 
-		
+
 		self.train = theano.function([mlp_input, mlp_target, theano.In(L2, value=self.lamb)], cost, updates=self.gradient_updates(cost, mlp.params, self.learning_rate,self.momentum))
-		## utility function to check the loss 
+		## utility function to check the loss
 		self.cost_function = theano.function([mlp_input, mlp_target, theano.In(L2, value=self.lamb)], cost)
 		# Create a theano function for computing the MLP's output given some input
 		self.mlp_output = theano.function([mlp_input], mlp.output(mlp_input))
-
-	def plot_computational_graph(self,path):
-		theano.printing.pydotprint(self.mlp_output, outfile=path, var_with_name_simple=True)
-		theano.printing.pydotprint(self.cost_function, outfile=path, var_with_name_simple=True)
-		theano.printing.pydotprint(self.train, outfile=path, var_with_name_simple=True)
-
-

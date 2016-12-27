@@ -1,0 +1,4 @@
+MLP model, with backpropagation algorithm for the gradient descend. In the model
+we included momentum and an L2 regularization parameter. As validation technique
+we used a 5 fold cross validation. The final parameters we have used in this
+model are Hidden Unit = 25, Learning rate = 0.05, Momentum = 0.6, lambda=0.0001.
