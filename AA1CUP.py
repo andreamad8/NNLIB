@@ -200,7 +200,7 @@ def KerasANN(X_train,y_train):
 			model.compile(loss='mean_squared_error', optimizer=sgd,metrics=['mean_squared_error'])
 			#print(X_t.shape,y_t.shape)
 			#print(model.summary())
-			for i in range(5000):
+			for i in range(8000):
 				model.train_on_batch(X_t.transpose(),y_t.transpose())
 			scores = model.evaluate(X_v.transpose(),y_v.transpose(), verbose=0)
 			prediction=model.predict_on_batch(X_v.transpose())
