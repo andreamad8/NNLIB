@@ -125,7 +125,7 @@ class Model(object):
 		iteration = 0
 		cost = 0
 		#print("TRAINING STARTED \n")
-		while iteration < max_iteration or cost == current_cost :
+		while iteration < max_iteration:
 			##training
 			current_cost = self.model.train(self.X_train, self.y_train)
 			current_output = self.model.mlp_output(self.X_train)
@@ -140,21 +140,21 @@ class Model(object):
 			self.accuracy_val = self.accuracy_regression(current_output_val,self.y_validation)
 			self.acc_val.append(self.accuracy_val)
 			self.loss_val.append(float(cost_val))
-			#if(iteration%50==0):
-			#	print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f}'.format(float(current_cost), self.accuracy_train))
-			#	print('Loss validation: {:.3f}, Accuracy validation: {:.3f}'.format(float(cost_val),float(self.accuracy_val)))
-			cost = current_cost
+			if(iteration%500==0):
+				print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f}'.format(float(current_cost), self.accuracy_train))
+				#print('Loss validation: {:.3f}, Accuracy validation: {:.3f}'.format(float(cost_val),float(self.accuracy_val)))
 			iteration += 1
 
 
 		##TO RUN CROSS VALIDATION
+		'''
 		current_output = self.model.mlp_output(self.X_train)
 		self.cost_train=self.model.cost_function(self.X_train, self.y_train)
 		self.accuracy_train = self.accuracy_regression(current_output,self.y_train)
 		current_output_val = self.model.mlp_output(self.X_validation)
 		self.cost_val=self.model.cost_function(self.X_validation, self.y_validation)
 		self.accuracy_val = self.accuracy_regression(current_output_val,self.y_validation)
-
+		'''
 		self.iter=iteration
 		#print('Loss traning   : {:.3f}, Accuracy traning   : {:.3f}'.format(float(current_cost), self.accuracy_train))
 		#print('Loss validation: {:.3f}, Accuracy validation: {:.3f}'.format(float(cost_val),float(self.accuracy_val)))
@@ -165,7 +165,7 @@ class Model(object):
 		'''
 		give X as input predict the output using the previous model
 		'''
-		return self.model.mlp_output(self.X_test)
+		return self.model.mlp_output(X_blindtest)
 
 	def test(self,X_test,y_test):
 		'''
@@ -185,7 +185,7 @@ class Model(object):
 		'''
 		fig = plt.figure()
 		ax1 = fig.add_subplot(2, 1, 1)
-		inset1 = inset_axes(ax1, width="60%", height="60%")
+		#inset1 = inset_axes(ax1, width="60%", height="60%")
 
 		ax1.plot(self.loss_training, label="Training",linewidth=1.95, alpha=0.7, color='red')
 		ax1.plot(self.loss_val,label="Test",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')
@@ -195,25 +195,28 @@ class Model(object):
 		ax1.set_ylabel("MSE")
 		ax1.yaxis.grid(True)
 		ax1.set_xlim([0,self.iter+1 ])
-		plt.title("AA1CUP")
+		plt.title("MONK")
+		'''
 		inset1.plot(self.loss_training, label="Training",linewidth=1.95, alpha=0.7, color='red')
 		inset1.plot(self.loss_val,label="Test",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')
 		inset1.set_xlim([0, 60])
 		inset1.yaxis.grid(True)
-
+		'''
 		ax1.legend(loc=1)
 		ax2 = fig.add_subplot(2, 1, 2)
-		inset2 = inset_axes(ax2, width="60%", height="60%")
+		#inset2 = inset_axes(ax2, width="60%", height="60%")
 
 		ax2.plot(self.acc_training,label="Training",linewidth=1.95, alpha=0.7, color='red')
 		ax2.plot(self.acc_val,label="Test",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')
+		'''
 		inset2.plot(self.acc_training,label="Training",linewidth=1.95, alpha=0.7, color='red')
 		inset2.plot(self.acc_val,label="Test",color="gray",linewidth=1.95, alpha=0.7, linestyle='dashed')
 		inset2.set_xlim([0, 60])
 		inset2.yaxis.grid(True)
+		'''
 		ax2.set_xlabel("Epochs")
-		ax2.set_ylabel("MEE")
+		ax2.set_ylabel("Accuracy")
 		ax2.set_xlim([0,self.iter+1 ])
 		ax2.yaxis.grid(True)
-		plt.savefig('IMG/AA1CUP.png', format='png',dpi=400)
+		#plt.savefig('IMG/AA1CUP.png', format='png',dpi=400)
 		plt.show()

@@ -219,7 +219,7 @@ if __name__=='__main__':
 	X_test=pickle.load( open( "dataset/X_test.p", "rb" ) )
 	y_test=pickle.load( open( "dataset/y_test.p", "rb" ) )
 	X_blind_test=pickle.load( open( "dataset/X_blindteset.p", "rb" ) )
-
+	print(X_blind_test.shape)
 	## 5 fold cross Validation for my model
 	#KfoldVALIDATION(X_train,y_train)
 
@@ -240,12 +240,16 @@ if __name__=='__main__':
 	m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
 	m.ANNModel(hidden_unit=25,	outputsize=2,learning_rate =0.05,momentum = 0.6,lamb=0.0001, activations="regression",	loss="MSE")
 	m.train(11000)
+
+
+	pickle.dump( m, open( "Model/finalmodel.p", "wb" ) )
 	predictedvalue=m.predict(X_blind_test)
 	print('# Andrea Madotto\n# samurai\n# LOC-OSM2 - AA1 2016 CUP v1\n# 27 Dec 2016\n')
 	i=1
 	for x_i,y_i in zip(X_blind_test.transpose(),predictedvalue.transpose()):
 		print('%d,%6f,%6f'%(i,y_i[0],y_i[1]))
 		i+=1
+	print(i)
 	#m.test(X_test,y_test)
 	#m.plotLA()
 

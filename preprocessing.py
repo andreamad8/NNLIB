@@ -101,6 +101,7 @@ def data(filename):
 if __name__=='__main__':
 	#X_train,y_train,X_test,y_test=data('dataset/LOC-OSM2-TR.csv')
 	X_blindteset=datatest('dataset/LOC-OSM2-TS.csv')
+	print(X_blindteset.shape)
 	pickle.dump( X_blindteset, open( "dataset/X_blindteset.p", "wb" ) )
 
 	'''

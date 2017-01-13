@@ -64,6 +64,7 @@ class NN(object):
 				param_update = theano.shared(param.get_value()*0., broadcastable=param.broadcastable)
 				# generate update
 				updates.append((param_update, momentum*param_update + (1. - momentum)*T.grad(cost, param)))
+				#updates.append((param_update, momentum*param_update +T.grad(cost, param)))
 				updates.append((param, param - learning_rate*param_update))
 		return updates
 
@@ -76,8 +77,8 @@ class NN(object):
 		activations = []
 
 		for n_input, n_output in zip(self.layer_sizes[:-1], self.layer_sizes[1:]):
-			#W_init.append( np.asarray(np.random.uniform(size=(n_output, n_input),low=-.7, high=.7), dtype=theano.config.floatX))
-			W_init.append( np.random.randn(n_output, n_input) * math.sqrt(2.0/n_input))
+			W_init.append( np.asarray(np.random.uniform(size=(n_output, n_input),low=-.7, high=.7), dtype=theano.config.floatX))
+			#W_init.append( np.random.randn(n_output, n_input) * math.sqrt(2.0/n_input))
 
 			b_init.append(np.zeros(n_output))
 

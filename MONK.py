@@ -39,19 +39,19 @@ def data(filename):
 	return X,y
 
 if __name__=='__main__':
-	X_train,y_train=data('dataset/monks-3.train')
-	X_test,y_test=data('dataset/monks-3.test')
+	X_train,y_train=data('dataset/monks-1.train')
+	X_test,y_test=data('dataset/monks-1.test')
 	assert X_train.shape[0]== X_test.shape[0]
 
 
 	m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
-	m.ANNModel(hidden_unit=4,
+	m.ANNModel(hidden_unit=3,
 			outputsize=1,
-			learning_rate = 0.9,
-			momentum = 0.5,
-			lamb=0.01,
+			learning_rate = 0.5,
+			momentum = 0.8,
+			lamb=0.0,
 			activations="sigmoid",
 			loss="MSE")
-	m.train(3000)
+	m.train(500)
 	#m.test()
 	m.plotLA()
