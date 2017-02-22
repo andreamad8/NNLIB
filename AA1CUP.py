@@ -2,7 +2,7 @@ from __future__ import print_function
 import numpy as np
 import theano
 import theano.tensor as T
-from ANNLIB.model import Model
+from annlib.model import Model
 from sklearn import preprocessing
 import itertools
 from sklearn.model_selection import KFold, cross_val_score
