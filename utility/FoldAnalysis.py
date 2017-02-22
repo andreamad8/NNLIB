@@ -16,7 +16,7 @@ import pickle
 '''
 utilits to print out the best models in each folds
 '''
-#### thereare two files because I have runned the fold separatelly.
+#### there are two files because I have runned the fold separatelly.
 #fold = pickle.load( open( "ResultModelSelection/foldsTEST.p", "rb" ) )
 #fold1 = pickle.load( open( "ResultModelSelection/foldsTESTmodel10.p", "rb" ) )
 #fold= [fold[i]+fold1[i] for i in range(len(fold))]

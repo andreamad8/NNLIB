@@ -21,114 +21,7 @@ from numpy import linalg as LA
 import csv
 
 ### PARAMETER FOR THE MODEL SELECTION
-models=[[100,0.01,0.1,0.01]
-,[100,0.01,0.3,0.01]
-,[100,0.01,0.6,0.01]
-,[100,0.01,0.8,0.01]
-,[100,0.01,0.1,0.001]
-,[100,0.01,0.3,0.001]
-,[100,0.01,0.6,0.001]
-,[100,0.01,0.8,0.001]
-,[100,0.01,0.1,0.0001]
-,[100,0.01,0.3,0.0001]
-,[100,0.01,0.6,0.0001]
-,[100,0.01,0.8,0.0001]
-,[50,0.01,0.1,0.01]
-,[50,0.01,0.3,0.01]
-,[50,0.01,0.6,0.01]
-,[50,0.01,0.8,0.01]
-,[50,0.01,0.1,0.001]
-,[50,0.01,0.3,0.001]
-,[50,0.01,0.6,0.001]
-,[50,0.01,0.8,0.001]
-,[50,0.01,0.1,0.0001]
-,[50,0.01,0.3,0.0001]
-,[50,0.01,0.6,0.0001]
-,[50,0.01,0.8,0.0001]
-,[50,0.03,0.1,0.01]
-,[50,0.03,0.3,0.01]
-,[50,0.03,0.1,0.001]
-,[50,0.03,0.3,0.001]
-,[50,0.03,0.1,0.0001]
-,[50,0.03,0.3,0.0001]
-,[25,0.01,0.1,0.01]
-,[25,0.01,0.3,0.01]
-,[25,0.01,0.6,0.01]
-,[25,0.01,0.8,0.01]
-,[25,0.01,0.1,0.001]
-,[25,0.01,0.3,0.001]
-,[25,0.01,0.6,0.001]
-,[25,0.01,0.8,0.001]
-,[25,0.01,0.1,0.0001]
-,[25,0.01,0.3,0.0001]
-,[25,0.01,0.6,0.0001]
-,[25,0.01,0.8,0.0001]
-,[25,0.03,0.1,0.01]
-,[25,0.03,0.3,0.01]
-,[25,0.03,0.6,0.01]
-,[25,0.03,0.8,0.01]
-,[25,0.03,0.1,0.001]
-,[25,0.03,0.3,0.001]
-,[25,0.03,0.6,0.001]
-,[25,0.03,0.8,0.001]
-,[25,0.03,0.1,0.0001]
-,[25,0.03,0.3,0.0001]
-,[25,0.03,0.6,0.0001]
-,[25,0.03,0.8,0.0001]
-,[25,0.05,0.1,0.01]
-,[25,0.05,0.3,0.01]
-,[25,0.05,0.6,0.01]
-,[25,0.05,0.1,0.001]
-,[25,0.05,0.3,0.001]
-,[25,0.05,0.6,0.001]
-,[25,0.05,0.1,0.0001]
-,[25,0.05,0.3,0.0001]
-,[25,0.05,0.6,0.0001]
-,[10,0.01,0.1,0.01]
-,[10,0.01,0.3,0.01]
-,[10,0.01,0.6,0.01]
-,[10,0.01,0.8,0.01]
-,[10,0.01,0.1,0.001]
-,[10,0.01,0.3,0.001]
-,[10,0.01,0.6,0.001]
-,[10,0.01,0.8,0.001]
-,[10,0.01,0.1,0.0001]
-,[10,0.01,0.3,0.0001]
-,[10,0.01,0.6,0.0001]
-,[10,0.01,0.8,0.0001]
-,[10,0.03,0.1,0.01]
-,[10,0.03,0.3,0.01]
-,[10,0.03,0.6,0.01]
-,[10,0.03,0.8,0.01]
-,[10,0.03,0.1,0.001]
-,[10,0.03,0.3,0.001]
-,[10,0.03,0.6,0.001]
-,[10,0.03,0.8,0.001]
-,[10,0.03,0.1,0.0001]
-,[10,0.03,0.3,0.0001]
-,[10,0.03,0.6,0.0001]
-,[10,0.03,0.8,0.0001]
-,[10,0.05,0.1,0.01]
-,[10,0.05,0.3,0.01]
-,[10,0.05,0.6,0.01]
-,[10,0.05,0.1,0.001]
-,[10,0.05,0.3,0.001]
-,[10,0.05,0.6,0.001]
-,[10,0.05,0.1,0.0001]
-,[10,0.05,0.3,0.0001]
-,[10,0.05,0.6,0.0001]
-,[10,0.05,0.8,0.0001]
-,[10,0.08,0.1,0.01]
-,[10,0.08,0.3,0.01]
-,[10,0.08,0.6,0.01]
-,[10,0.08,0.1,0.001]
-,[10,0.08,0.3,0.001]
-,[10,0.08,0.6,0.001]
-,[10,0.08,0.1,0.0001]
-,[10,0.08,0.3,0.0001]
-,[10,0.08,0.6,0.0001]
-,[10,0.08,0.8,0.0001]
-]
+models=[]
 
 ## MEE CALCULATOR
 def accuracy_regression(output,y):
@@ -219,13 +112,15 @@ if __name__=='__main__':
 	X_test=pickle.load( open( "dataset/X_test.p", "rb" ) )
 	y_test=pickle.load( open( "dataset/y_test.p", "rb" ) )
 	X_blind_test=pickle.load( open( "dataset/X_blindteset.p", "rb" ) )
-	print(X_blind_test.shape)
+
+
 	## 5 fold cross Validation for my model
 	#KfoldVALIDATION(X_train,y_train)
 
 
 	## 5 fold cross Validation for Keras Model
 	#KerasANN(X_train,y_train)
+
 	## Test keras model
 	#m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
 	#m.KerasANN(hidden_unit=25,learning_rate =0.05,momentum = 0.6,lamb=0.0001)
@@ -235,11 +130,12 @@ if __name__=='__main__':
 	#m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
 	#m.LinerReg()
 
-
-
+	## My Model
 	m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
 	m.ANNModel(hidden_unit=25,	outputsize=2,learning_rate =0.05,momentum = 0.6,lamb=0.0001, activations="regression",	loss="MSE")
 	m.train(11000)
+	#m.test(X_test,y_test)
+	#m.plotLA()
 
 
 	pickle.dump( m, open( "Model/finalmodel.p", "wb" ) )
@@ -250,59 +146,3 @@ if __name__=='__main__':
 		print('%d,%6f,%6f'%(i,y_i[0],y_i[1]))
 		i+=1
 	print(i)
-	#m.test(X_test,y_test)
-	#m.plotLA()
-
-
-	### to generate avg and std of our model
-	'''
-	temp=[]
-	for i in range(10):
-		m=Model(X_train,y_train,X_test,y_test,X_test,y_test)
-		m.ANNModel(hidden_unit=25,	outputsize=2,learning_rate =0.05,momentum = 0.6,lamb=0.0001, activations="regression",	loss="MSE")
-		m.train(5000)
-		temp.append([m.accuracy_train,m.cost_train,m.accuracy_val,m.cost_val])
-
-
-	a=np.array(temp)
-	print(np.mean(a, axis=0))
-	print(np.std(a,axis=0))
-
-	#m.test(X_test,y_test)
-	m.plotLA()
-	'''
-
-
-	### Hidden Unit vs Lambda
-	'''
-	#0.01,0.001,0.0001
-	plot_arr=[]
-	pair=[	[10,0.01],[25,0.01],[50,0.01],	[100,0.01],
-		  	[10,0.01],[25,0.001],	[50,0.001],	[100,0.001],
-		  	[10,0.01],[25,0.0001],[50,0.0001],[100,0.0001]]
-	for p in pair:
-		m=Model(X_train,y_train,X_train,y_train,[],[])
-		m.ANNModel(hidden_unit=p[0],outputsize=2,learning_rate =0.03,momentum = 0.1,lamb=p[1], activations="regression",	loss="MSE")
-		m.train(300)
-		plot_arr.append(m.loss_training)
-	pickle.dump( plot_arr, open( "Model/HUvsLAMBDA03.p", "wb" ) )
-	pickle.dump( pair, open( "Model/pairHUvsLAMBDA03.p", "wb" ) )
-	'''
-
-
-
-	### Learning rate vs Momentum
-	'''
-	plot_arr=[]
-	pair=[[0.1,0.1],[0.05,0.1],[0.03,0.1],[0.01,0.1],
-		  [0.1,0.3],[0.05,0.3],[0.03,0.3],[0.01,0.3],
-		  [0.1,0.6],[0.05,0.6],[0.03,0.6],[0.01,0.6],
-		  [0.1,0.8],[0.05,0.8],[0.03,0.8],[0.01,0.8]]
-	for p in pair:
-		m=Model(X_train,y_train,X_train,y_train,[],[])
-		m.ANNModel(hidden_unit=10,	outputsize=2,learning_rate = p[0],momentum = p[1],lamb=0.01, activations="regression",	loss="MSE")
-		m.train(300)
-		plot_arr.append(m.loss_training)
-	pickle.dump( plot_arr, open( "Model/LRvsMOM10.p", "wb" ) )
-	pickle.dump( pair, open( "Model/pairLRvsMOM10.p", "wb" ) )
-	'''
