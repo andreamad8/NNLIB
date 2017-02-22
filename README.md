@@ -43,5 +43,7 @@ In the `AA1CUP.py` we also implemented two function used for the K-cross fold va
 
 ##References
 [1] Al-Rfou, Rami, et al. "Theano: A Python framework for fast computation of mathematical expressions." arXiv preprint arXiv:1605.02688 (2016).
+
 [2] Chollet, François. "Keras (2015)." URL http://keras. io.
+
 [3] Pedregosa, Fabian, et al. "Scikit-learn: Machine learning in Python." Journal of Machine Learning Research 12.Oct (2011): 2825-2830.
